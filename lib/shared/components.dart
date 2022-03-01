@@ -76,6 +76,31 @@ DefaultButton({
   );
 }
 
+LoadingButton() {
+  return Stack(children: [
+    Container(
+      height: 50,
+      width: double.infinity,
+      child: Expanded(
+        child: TextButton(
+          style: TextButton.styleFrom(
+            primary: Colors.white,
+            backgroundColor: Colors.blue,
+          ),
+          onPressed: () {},
+          child: const Text(''),
+        ),
+      ),
+    ),
+    const Padding(
+      padding: EdgeInsets.all(8.0),
+      child: Center(
+          child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white))),
+    )
+  ]);
+}
+
 void navigateToAndFinish(
     {required BuildContext context, required Widget screen}) {
   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(

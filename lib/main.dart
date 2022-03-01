@@ -4,7 +4,12 @@ import 'package:shop_app_flutter/shared/components.dart';
 import 'package:shop_app_flutter/shared/constants.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import 'network/dio_helper.dart';
+
 void main() {
+  //initialize dio instance to use it later for api calls
+  DioHelper.init();
+
   runApp(const MyApp());
 }
 
@@ -40,6 +45,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //to fix overflow when showing keyboard
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Shoply'),
         actions: [
