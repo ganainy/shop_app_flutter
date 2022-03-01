@@ -25,6 +25,57 @@ void navigateTo({required BuildContext context, required Widget screen}) {
   );
 }
 
+DefaultFormField({
+  required String labelText,
+  required TextEditingController controller,
+  bool obscureText = false,
+  Icon? prefixIcon,
+  IconButton? suffixIcon,
+  TextInputType? keyboardType,
+  GestureTapCallback? onFieldTap,
+  bool? isReadOnly,
+  FormFieldValidator? validator,
+  ValueChanged<String>? onFieldChanged,
+}) {
+  return TextFormField(
+    onChanged: onFieldChanged,
+    onTap: onFieldTap,
+    keyboardType: keyboardType,
+    controller: controller,
+    obscureText: obscureText,
+    readOnly: isReadOnly ?? false,
+    validator: validator,
+    decoration: InputDecoration(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      prefixIcon: prefixIcon,
+      suffixIcon: suffixIcon,
+      labelText: labelText,
+    ),
+  );
+}
+
+DefaultButton({
+  required String text,
+  required VoidCallback onPressed,
+}) {
+  return Container(
+    height: 50,
+    width: double.infinity,
+    child: Expanded(
+      child: TextButton(
+        onPressed: onPressed,
+        child: Text(text.toUpperCase()),
+        style: TextButton.styleFrom(
+          primary: Colors.white,
+          backgroundColor: Colors.blue,
+        ),
+      ),
+    ),
+  );
+}
+
 void navigateToAndFinish(
     {required BuildContext context, required Widget screen}) {
   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(

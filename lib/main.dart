@@ -45,8 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: [
           IconButton(
               onPressed: () {
-                navigateToAndFinish(
-                    context: context, screen: const LoginScreen());
+                navigateToAndFinish(context: context, screen: LoginScreen());
               },
               icon: const Text('SKIP'))
         ],
@@ -90,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () {
           if (_controller.page == 2) {
             //this is the last page of onboarding, go to login screen
-            navigateToAndFinish(context: context, screen: const LoginScreen());
+            navigateToAndFinish(context: context, screen: LoginScreen());
           } else {
             //go to next page of onboarding
             _controller.nextPage(
