@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app_flutter/bloc/login_cubit.dart';
-import 'package:shop_app_flutter/screens/shop.dart';
+import 'package:shop_app_flutter/layouts/shop_layout.dart';
 import 'package:shop_app_flutter/screens/sign_up.dart';
 import 'package:shop_app_flutter/shared/components.dart';
 
@@ -22,10 +22,9 @@ class LoginScreen extends StatelessWidget {
           print('Login state:$state');
 
           if (state is LoginSuccess) {
-            navigateTo(context: context, screen: ShopScreen());
+            navigateToAndFinish(context: context, screen: ShopLayout());
           } else if (state is LoginError) {
-            var snackBar =
-                const SnackBar(content: Text('Error with your credentials'));
+            var snackBar = SnackBar(content: Text(state.errorMessage));
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }
         },
