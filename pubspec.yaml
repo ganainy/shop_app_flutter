@@ -104,6 +104,10 @@ flutter:
          weight: 400
        - asset: fonts/Inter-Bold.ttf
          weight: 700
+   - family: Merienda
+     fonts:
+       - asset: fonts/Merienda.ttf
+
 
 
 

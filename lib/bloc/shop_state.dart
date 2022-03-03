@@ -9,6 +9,10 @@ class ShopBotNavState extends ShopStates {}
 
 class ShopBannersSuccessState extends ShopStates {}
 
+class ShopCategoriesSuccessState extends ShopStates {}
+
+class ShopCategoryProductsSuccessState extends ShopStates {}
+
 class ShopBannersLoadingState extends ShopStates {}
 
 class ShopProductsState extends ShopStates {}

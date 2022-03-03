@@ -24,6 +24,8 @@ class ShopCubit extends Cubit<ShopStates> {
   int botNavCurrentIndex = 0;
   List<String> banners = [];
   List<ProductDataModel> products = [];
+  List<CategoriesDataModel> categories = [];
+  List<CategoryProductDataModel> categoryProducts = [];
 
   List<BottomNavigationBarItem> botNavItems = [
     const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
@@ -103,6 +105,38 @@ class ShopCubit extends Cubit<ShopStates> {
       });
       print('getProducts${products[0].name}');
       emit(ShopProductsState());
+    });
+  }
+
+  void getCategories() {
+    if (categories.isNotEmpty) return;
+
+    DioHelper.getData(path: CATEGORIES).then((json) {
+      //print('getBanners${bannerModel.bannerDataModels[0].image}');
+      CategoriesModel categoriesModel = CategoriesModel.fromJson(json.data);
+      categoriesModel.categoriesDataModels.forEach((element) {
+        categories.add(element);
+      });
+      print('getCategories${categories[0].name}');
+      emit(ShopCategoriesSuccessState());
+    });
+  }
+
+  //get products in certain category
+  void getCategoryProducts(int categoryId) {
+    if (categoryProducts.isNotEmpty) return;
+
+    DioHelper.getData(
+        path: PRODUCTS,
+        queryParams: {'category_id': '$categoryId'}).then((json) {
+      //print('getBanners${bannerModel.bannerDataModels[0].image}');
+      CategoryProductsModel categoryProductsModel =
+          CategoryProductsModel.fromJson(json.data);
+      categoryProductsModel.categoryProductDataModels.forEach((element) {
+        categoryProducts.add(element);
+      });
+      print('getCategoryProducts${categoryProducts}');
+      emit(ShopCategoryProductsSuccessState());
     });
   }
 }

@@ -17,8 +17,9 @@ class ShopLayout extends StatelessWidget {
           var shopCubit = ShopCubit.get(context);
           return Scaffold(
             appBar: AppBar(
-              title: Text(
+              title: const Text(
                 'Shoply',
+                style: TextStyle(fontFamily: 'Merienda'),
               ),
               actions: [
                 IconButton(

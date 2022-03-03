@@ -3,6 +3,7 @@ import 'dart:core';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shop_app_flutter/models/home_model.dart';
+import 'package:shop_app_flutter/screens/category_products.dart';
 import 'package:shop_app_flutter/shared/constants.dart';
 
 class PageViewModel {
@@ -102,7 +103,68 @@ LoadingButton() {
   ]);
 }
 
+Widget Category(CategoriesDataModel category, BuildContext context) {
+  return GestureDetector(
+    onTap: () => navigateTo(
+        context: context,
+        screen: CategoryProductsScreen(category.categoryId, category.name)),
+    child: Row(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8.0),
+          child: Image.network(
+            category.image,
+            fit: BoxFit.fill,
+            height: 100.0,
+            width: 100.0,
+          ),
+        ),
+        const SizedBox(
+          width: 8,
+        ),
+        Expanded(
+            child: Text(
+          category.name,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        )),
+        const Icon(
+          Icons.arrow_forward_ios,
+          color: primaryColor,
+        )
+      ],
+    ),
+  );
+}
+
 Widget Product(ProductDataModel product, double screenWidth) {
+  return Container(
+    color: Colors.white,
+    child: Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Image(
+            fit: BoxFit.fill,
+            width: screenWidth / 2,
+            height: 150,
+            image: NetworkImage(product.image),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Text(
+            product.name,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget CategoryProduct(CategoryProductDataModel product, double screenWidth) {
   return Container(
     color: Colors.white,
     child: Column(
