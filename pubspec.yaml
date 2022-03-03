@@ -40,6 +40,7 @@ dependencies:
   flutter_bloc: ^8.0.1
   dio: ^4.0.4
   shared_preferences: ^2.0.13
+  carousel_slider: ^4.0.0
 
 dev_dependencies:
   flutter_test:

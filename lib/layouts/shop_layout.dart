@@ -17,14 +17,26 @@ class ShopLayout extends StatelessWidget {
           var shopCubit = ShopCubit.get(context);
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Shoply'),
+              title: Text(
+                'Shoply',
+              ),
+              actions: [
+                IconButton(
+                    onPressed: () {
+                      //navigateTo(context: context, screen: SearchScreen());
+                    },
+                    icon: const Icon(Icons.search)),
+              ],
             ),
-            body: TextButton(
-              onPressed: () {
-                shopCubit.logOut(context);
-              },
-              child: Text('LOGOUT'),
+            bottomNavigationBar: BottomNavigationBar(
+              elevation: 50,
+              unselectedItemColor: Colors.grey,
+              fixedColor: Colors.blue,
+              items: shopCubit.botNavItems,
+              currentIndex: shopCubit.botNavCurrentIndex,
+              onTap: (index) => shopCubit.changeBotNavIndex(index),
             ),
+            body: shopCubit.botNavScreens[shopCubit.botNavCurrentIndex],
           );
         },
       ),
