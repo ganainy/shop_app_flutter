@@ -23,6 +23,7 @@ class ShopCubit extends Cubit<ShopStates> {
 
   int botNavCurrentIndex = 0;
   List<String> banners = [];
+  List<ProductDataModel> products = [];
 
   List<BottomNavigationBarItem> botNavItems = [
     const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
@@ -47,7 +48,7 @@ class ShopCubit extends Cubit<ShopStates> {
     switch (index) {
       case 0:
         {
-          getBanners();
+          //todo
           break;
         }
 
@@ -79,13 +80,29 @@ class ShopCubit extends Cubit<ShopStates> {
   void getBanners() {
     if (banners.isNotEmpty) return;
 
+    emit(ShopBannersLoadingState());
+
     DioHelper.getData(path: BANNERS).then((json) {
       //print('getBanners${bannerModel.bannerDataModels[0].image}');
-      BannerModel bannerModel = BannerModel.fromJson(json.data);
-      bannerModel.bannerDataModels.forEach((element) {
+      BannersModel bannersModel = BannersModel.fromJson(json.data);
+      bannersModel.bannerDataModels.forEach((element) {
         banners.add(element.image);
       });
-      emit(ShopBannersState());
+      emit(ShopBannersSuccessState());
+    });
+  }
+
+  void getProducts() {
+    if (products.isNotEmpty) return;
+
+    DioHelper.getData(path: PRODUCTS).then((json) {
+      //print('getBanners${bannerModel.bannerDataModels[0].image}');
+      ProductsModel productsModel = ProductsModel.fromJson(json.data);
+      productsModel.productDataModels.forEach((element) {
+        products.add(element);
+      });
+      print('getProducts${products[0].name}');
+      emit(ShopProductsState());
     });
   }
 }

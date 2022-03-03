@@ -2,6 +2,7 @@ import 'dart:core';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shop_app_flutter/models/home_model.dart';
 import 'package:shop_app_flutter/shared/constants.dart';
 
 class PageViewModel {
@@ -99,6 +100,34 @@ LoadingButton() {
               valueColor: AlwaysStoppedAnimation<Color>(Colors.white))),
     )
   ]);
+}
+
+Widget Product(ProductDataModel product, double screenWidth) {
+  return Container(
+    color: Colors.white,
+    child: Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Image(
+            fit: BoxFit.fill,
+            width: screenWidth / 2,
+            height: 150,
+            image: NetworkImage(product.image),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Text(
+            product.name,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 void navigateToAndFinish(
