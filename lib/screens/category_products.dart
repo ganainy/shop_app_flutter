@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:shop_app_flutter/bloc/shop_cubit.dart';
-import 'package:shop_app_flutter/shared/components.dart';
 
 class CategoryProductsScreen extends StatelessWidget {
   CategoryProductsScreen(
@@ -20,9 +19,7 @@ class CategoryProductsScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => ShopCubit(),
       child: BlocConsumer<ShopCubit, ShopStates>(
-        listener: (context, state) {
-          // TODO: implement listener
-        },
+        listener: (context, state) {},
         builder: (context, state) {
           ShopCubit shopCubit = ShopCubit.get(context)
             ..getCategoryProducts(categoryId);
@@ -40,8 +37,8 @@ class CategoryProductsScreen extends StatelessWidget {
                       crossAxisCount: 2,
                       children: List.generate(shopCubit.categoryProducts.length,
                           (index) {
-                        return CategoryProduct(
-                            shopCubit.categoryProducts[index], screenWidth);
+                        //todo handle category product as product (unify models)
+                        return Text('todo');
                       }),
                     ),
                   )

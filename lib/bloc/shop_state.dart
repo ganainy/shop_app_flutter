@@ -13,6 +13,14 @@ class ShopCategoriesSuccessState extends ShopStates {}
 
 class ShopCategoryProductsSuccessState extends ShopStates {}
 
+class ShopFavoritesSuccessState extends ShopStates {}
+
+class LocalChangeFavoriteState extends ShopStates {}
+
+class ShopFavoritesLoadingState extends ShopStates {}
+
+class UpdateFavoritesSuccessState extends ShopStates {}
+
 class ShopBannersLoadingState extends ShopStates {}
 
 class ShopProductsState extends ShopStates {}

@@ -19,7 +19,7 @@ class LoginScreen extends StatelessWidget {
       create: (context) => LoginCubit(),
       child: BlocConsumer<LoginCubit, LoginStates>(
         listener: (context, state) {
-          print('Login state:$state');
+          //print('Login state:$state');
 
           if (state is LoginSuccess) {
             navigateToAndFinish(context: context, screen: ShopLayout());

@@ -11,9 +11,7 @@ class CategoriesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ShopCubit, ShopStates>(
-      listener: (context, state) {
-        // TODO: implement listener
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         ShopCubit shopCubit = ShopCubit.get(context)..getCategories();
         return shopCubit.categories.isNotEmpty

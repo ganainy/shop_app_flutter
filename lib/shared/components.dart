@@ -2,6 +2,8 @@ import 'dart:core';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:shop_app_flutter/bloc/shop_cubit.dart';
 import 'package:shop_app_flutter/models/home_model.dart';
 import 'package:shop_app_flutter/screens/category_products.dart';
 import 'package:shop_app_flutter/shared/constants.dart';
@@ -136,20 +138,36 @@ Widget Category(CategoriesDataModel category, BuildContext context) {
   );
 }
 
-Widget Product(ProductDataModel product, double screenWidth) {
+Widget Product(ProductDataModel product, double screenWidth,
+    ShopCubit shopCubit, BuildContext context) {
   return Container(
     color: Colors.white,
     child: Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Image(
-            fit: BoxFit.fill,
-            width: screenWidth / 2,
-            height: 150,
-            image: NetworkImage(product.image),
+        Stack(children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Image(
+              fit: BoxFit.fill,
+              width: screenWidth / 2,
+              height: 150,
+              image: NetworkImage(product.image),
+            ),
           ),
-        ),
+          product.price < product.oldPrice
+              ? Container(
+                  color: Colors.red,
+                  child: const Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(
+                      'DISCOUNT',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                )
+              : SizedBox(),
+        ]),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Text(
@@ -159,11 +177,70 @@ Widget Product(ProductDataModel product, double screenWidth) {
             overflow: TextOverflow.ellipsis,
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: SizedBox(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  product.price.toString(),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                product.price < product.oldPrice
+                    ? Text(
+                        product.oldPrice.toString(),
+                        style: const TextStyle(
+                            decoration: TextDecoration.lineThrough,
+                            color: Colors.grey),
+                      )
+                    : const SizedBox(),
+                const Spacer(),
+                (() {
+                  if (shopCubit.state is ShopFavoritesLoadingState) {
+                    return const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            color: Colors.grey,
+                          )),
+                    );
+                  } else if (product.isFavorite) {
+                    return IconButton(
+                        onPressed: () {
+                          shopCubit.addRemoveFavorite(product, context);
+                        },
+                        icon: const Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                        ));
+                  } else {
+                    return IconButton(
+                        onPressed: () {
+                          shopCubit.addRemoveFavorite(product, context);
+                        },
+                        icon: const Icon(
+                          Icons.favorite_border,
+                          color: Colors.grey,
+                        ));
+                  }
+                }())
+              ],
+            ),
+          ),
+        )
       ],
     ),
   );
 }
 
+/*
 Widget CategoryProduct(CategoryProductDataModel product, double screenWidth) {
   return Container(
     color: Colors.white,
@@ -190,7 +267,7 @@ Widget CategoryProduct(CategoryProductDataModel product, double screenWidth) {
       ],
     ),
   );
-}
+}*/
 
 void navigateToAndFinish(
     {required BuildContext context, required Widget screen}) {

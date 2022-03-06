@@ -6,6 +6,7 @@ import 'package:shop_app_flutter/layouts/shop_layout.dart';
 import 'package:shop_app_flutter/network/cache_helper.dart';
 import 'package:shop_app_flutter/screens/login.dart';
 import 'package:shop_app_flutter/shared/components.dart';
+import 'package:shop_app_flutter/shared/constants.dart';
 
 part 'main_state.dart';
 
@@ -41,6 +42,12 @@ class MainCubit extends Cubit<MainStates> {
       navigateToAndFinish(context: context, screen: LoginScreen());
     });
 
-    print('endOnBoarding');
+    //print('endOnBoarding');
+  }
+
+  saveToken() {
+    CacheHelper.getData(key: 'token').then((token) {
+      TOKEN = token.toString();
+    });
   }
 }

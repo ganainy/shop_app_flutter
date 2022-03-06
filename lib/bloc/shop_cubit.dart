@@ -13,6 +13,7 @@ import 'package:shop_app_flutter/screens/home.dart';
 import 'package:shop_app_flutter/screens/login.dart';
 import 'package:shop_app_flutter/screens/settings.dart';
 import 'package:shop_app_flutter/shared/components.dart';
+import 'package:shop_app_flutter/shared/constants.dart';
 
 part 'shop_state.dart';
 
@@ -24,6 +25,7 @@ class ShopCubit extends Cubit<ShopStates> {
   int botNavCurrentIndex = 0;
   List<String> banners = [];
   List<ProductDataModel> products = [];
+  List<ProductDataModel> userFavoriteProducts = [];
   List<CategoriesDataModel> categories = [];
   List<CategoryProductDataModel> categoryProducts = [];
 
@@ -75,6 +77,7 @@ class ShopCubit extends Cubit<ShopStates> {
 
   void logOut(BuildContext context) {
     CacheHelper.removeData(key: 'token').then((value) {
+      TOKEN = '';
       navigateToAndFinish(context: context, screen: LoginScreen());
     });
   }
@@ -103,8 +106,10 @@ class ShopCubit extends Cubit<ShopStates> {
       productsModel.productDataModels.forEach((element) {
         products.add(element);
       });
-      print('getProducts${products[0].name}');
-      emit(ShopProductsState());
+      //after getting all products get user favorite products
+      getFavorites();
+      //print('getProducts${products[0].name}');
+      //emit(ShopProductsState());
     });
   }
 
@@ -117,7 +122,7 @@ class ShopCubit extends Cubit<ShopStates> {
       categoriesModel.categoriesDataModels.forEach((element) {
         categories.add(element);
       });
-      print('getCategories${categories[0].name}');
+      //print('getCategories${categories[0].name}');
       emit(ShopCategoriesSuccessState());
     });
   }
@@ -135,8 +140,75 @@ class ShopCubit extends Cubit<ShopStates> {
       categoryProductsModel.categoryProductDataModels.forEach((element) {
         categoryProducts.add(element);
       });
-      print('getCategoryProducts${categoryProducts}');
+      //print('getCategoryProducts${categoryProducts}');
       emit(ShopCategoryProductsSuccessState());
     });
+  }
+
+  getFavorites() {
+    emit(ShopFavoritesLoadingState());
+    //this list is only temporary to compare with products and add isFavorite to products
+    List<FavoriteProductDataModel> favoriteProducts = [];
+
+    DioHelper.getData(path: FAVORITES, headers: {
+      'Authorization': TOKEN,
+    }).then((json) {
+      print('getFavorites${json}');
+
+      FavoriteProductsModel favoriteProductsModel =
+          FavoriteProductsModel.fromJson(json.data);
+      favoriteProductsModel.favoriteProductDataModel.forEach((element) {
+        favoriteProducts.add(element);
+      });
+
+      products.forEach((product) {
+        for (var i = 0; i < favoriteProducts.length; i++) {
+          if (product.id == favoriteProducts[i].productId) {
+            product.isFavorite = true;
+            if (!userFavoriteProducts.contains(product)) {
+              userFavoriteProducts.add(product);
+            }
+          }
+        }
+      });
+
+      //print('getFavoriteProducts${favoriteProducts[0].name}');
+      emit(ShopFavoritesSuccessState());
+    });
+  }
+
+  void addRemoveFavorite(ProductDataModel product, BuildContext context) {
+    //update locally to show on ui
+    updateFavoriteLists(product);
+    //update on the api
+    DioHelper.postData(path: FAVORITES, headers: {
+      'Authorization': TOKEN,
+    }, data: {
+      'product_id': product.id,
+    }).then((json) {
+      //update of favorite on api success
+    }).catchError((error) {
+      //update of favorite on api failed,reverse the changes made to ui and show
+      //error message
+      updateFavoriteLists(product);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("${product.name} favorite state update failed"),
+      ));
+    });
+  }
+
+  void updateFavoriteLists(ProductDataModel product) {
+    if (userFavoriteProducts.contains(product)) {
+      userFavoriteProducts.remove(product);
+    } else {
+      userFavoriteProducts.add(product);
+    }
+    products.forEach((element) {
+      if (element == product) {
+        element.isFavorite = !element.isFavorite;
+      }
+    });
+
+    emit(LocalChangeFavoriteState());
   }
 }

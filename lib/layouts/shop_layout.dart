@@ -10,9 +10,7 @@ class ShopLayout extends StatelessWidget {
     return BlocProvider(
       create: (context) => ShopCubit(),
       child: BlocConsumer<ShopCubit, ShopStates>(
-        listener: (context, state) {
-          // TODO: implement listener
-        },
+        listener: (context, state) {},
         builder: (context, state) {
           var shopCubit = ShopCubit.get(context);
           return Scaffold(

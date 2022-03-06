@@ -26,8 +26,9 @@ class LoginCubit extends Cubit<LoginStates> {
         path: LOGIN,
         data: {'email': email, 'password': password}).then((value) {
       LoginModel loginModel = LoginModel.fromJson(value.data);
-      print('api resonse$loginModel');
+      //print('api resonse$loginModel');
       if (loginModel.status) {
+        //print('token  ${loginModel.data?.token}');
         CacheHelper.setData(key: 'token', value: loginModel.data?.token)
             .then((value) {
           emit(LoginSuccess());
@@ -37,7 +38,7 @@ class LoginCubit extends Cubit<LoginStates> {
       }
     }).catchError((error) {
       emit(LoginError(error.toString()));
-      print(error.toString());
+      //print(error.toString());
     });
   }
 }

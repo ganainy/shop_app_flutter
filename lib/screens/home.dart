@@ -16,74 +16,76 @@ class HomeScreen extends StatelessWidget {
       ..getProducts();
     var screenWidth = MediaQuery.of(context).size.width;
     return BlocConsumer<ShopCubit, ShopStates>(
-      listener: (context, state) {
-        // TODO: implement listener
-      },
+      listener: (context, state) {},
       builder: (context, state) {
-        return Column(children: [
-          const SizedBox(
-            height: 6,
-          ),
-          shopCubit.banners.isNotEmpty
-              ? CarouselSlider(
-                  options: CarouselOptions(
-                    height: 120.0,
-                    viewportFraction: .95,
-                    initialPage: 0,
-                    enableInfiniteScroll: true,
-                    reverse: false,
-                    autoPlay: true,
-                    autoPlayInterval: const Duration(seconds: 5),
-                    autoPlayAnimationDuration: const Duration(seconds: 2),
-                    autoPlayCurve: Curves.fastOutSlowIn,
+        return SingleChildScrollView(
+          child: Column(children: [
+            const SizedBox(
+              height: 6,
+            ),
+            shopCubit.banners.isNotEmpty
+                ? CarouselSlider(
+                    options: CarouselOptions(
+                      height: 160.0,
+                      viewportFraction: .95,
+                      initialPage: 0,
+                      enableInfiniteScroll: true,
+                      reverse: false,
+                      autoPlay: true,
+                      autoPlayInterval: const Duration(seconds: 5),
+                      autoPlayAnimationDuration: const Duration(seconds: 2),
+                      autoPlayCurve: Curves.fastOutSlowIn,
+                    ),
+                    items: shopCubit.banners.map((bannerUrl) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return Container(
+                              width: MediaQuery.of(context).size.width,
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 5.0),
+                              decoration:
+                                  const BoxDecoration(color: Colors.grey),
+                              child: Image(
+                                fit: BoxFit.fill,
+                                image: NetworkImage(bannerUrl),
+                              ));
+                        },
+                      );
+                    }).toList(),
+                  )
+                : SizedBox(
+                    height: 120,
+                    child: Center(
+                      child: FadingText('Loading Banners...'),
+                    ),
                   ),
-                  items: shopCubit.banners.map((bannerUrl) {
-                    return Builder(
-                      builder: (BuildContext context) {
-                        return Container(
-                            width: MediaQuery.of(context).size.width,
-                            margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                            decoration: const BoxDecoration(color: Colors.grey),
-                            child: Image(
-                              fit: BoxFit.fill,
-                              image: NetworkImage(bannerUrl),
-                            ));
-                      },
-                    );
-                  }).toList(),
-                )
-              : SizedBox(
-                  height: 120,
-                  child: Center(
-                    child: FadingText('Loading...'),
-                  ),
-                ),
-          const SizedBox(
-            height: 6,
-          ),
-          Expanded(
-            child: shopCubit.products.isNotEmpty
+            const SizedBox(
+              height: 6,
+            ),
+            shopCubit.products.isNotEmpty
                 ? Container(
                     color: Colors.grey[200],
                     child: GridView.count(
+                      shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
                       crossAxisSpacing: 1,
                       mainAxisSpacing: 1,
-                      childAspectRatio: .85,
+                      childAspectRatio: .70,
                       crossAxisCount: 2,
                       children:
                           List.generate(shopCubit.products.length, (index) {
-                        return Product(shopCubit.products[index], screenWidth);
+                        return Product(shopCubit.products[index], screenWidth,
+                            shopCubit, context);
                       }),
                     ),
                   )
                 : SizedBox(
                     child: Center(
-                      child: FadingText('Loading...'),
+                      child: FadingText('Loading Products...'),
                     ),
                   ),
-          ),
-        ]);
+          ]),
+        );
       },
     );
   }

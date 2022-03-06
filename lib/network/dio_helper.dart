@@ -13,7 +13,9 @@ class DioHelper {
   static Future<Response> getData({
     required String path,
     Map<String, dynamic>? queryParams,
+    Map<String, dynamic>? headers,
   }) async {
+    if (headers != null) dio.options.headers = headers;
     return await dio.get(path, queryParameters: queryParams);
   }
 
@@ -21,12 +23,11 @@ class DioHelper {
     required String path,
     Map<String, dynamic>? queryParams,
     required Map<String, dynamic> data,
-    String lang = 'en',
-    String authorizationToken = '',
+    Map<String, dynamic>? headers,
   }) async {
     //add headers to the dio in addition to the headers i alrady created in
     // case i want to pass some optional parameters like language
-    dio.options.headers = {'lang': lang, 'Authorization': authorizationToken};
+    dio.options.headers = headers;
 
     return await dio.post(path, queryParameters: queryParams, data: data);
   }

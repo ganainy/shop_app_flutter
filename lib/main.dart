@@ -35,7 +35,9 @@ class MyApp extends StatelessWidget {
         child: BlocConsumer<MainCubit, MainStates>(
           listener: (context, state) {},
           builder: (context, state) {
-            var mainCubit = MainCubit.get(context)..getStartScreen(context);
+            var mainCubit = MainCubit.get(context)
+              ..getStartScreen(context)
+              ..saveToken();
             return Scaffold(
               //to fix overflow when showing keyboard
               resizeToAvoidBottomInset: false,
