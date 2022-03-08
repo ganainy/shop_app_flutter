@@ -25,9 +25,8 @@ class ShopCubit extends Cubit<ShopStates> {
   int botNavCurrentIndex = 0;
   List<String> banners = [];
   List<ProductDataModel> products = [];
-  List<ProductDataModel> userFavoriteProducts = [];
   List<CategoriesDataModel> categories = [];
-  List<CategoryProductDataModel> categoryProducts = [];
+  List<ProductDataModel> categoryProducts = [];
 
   List<BottomNavigationBarItem> botNavItems = [
     const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
@@ -77,7 +76,7 @@ class ShopCubit extends Cubit<ShopStates> {
 
   void logOut(BuildContext context) {
     CacheHelper.removeData(key: 'token').then((value) {
-      TOKEN = '';
+      Shared.TOKEN = '';
       navigateToAndFinish(context: context, screen: LoginScreen());
     });
   }
@@ -130,16 +129,16 @@ class ShopCubit extends Cubit<ShopStates> {
   //get products in certain category
   void getCategoryProducts(int categoryId) {
     if (categoryProducts.isNotEmpty) return;
-
+    print('favoriteProductsIds count ${Shared.favoriteProductsIds.length}');
     DioHelper.getData(
         path: PRODUCTS,
         queryParams: {'category_id': '$categoryId'}).then((json) {
       //print('getBanners${bannerModel.bannerDataModels[0].image}');
-      CategoryProductsModel categoryProductsModel =
-          CategoryProductsModel.fromJson(json.data);
-      categoryProductsModel.categoryProductDataModels.forEach((element) {
+      ProductsModel categoryProductsModel = ProductsModel.fromJson(json.data);
+      categoryProductsModel.productDataModels.forEach((element) {
         categoryProducts.add(element);
       });
+
       //print('getCategoryProducts${categoryProducts}');
       emit(ShopCategoryProductsSuccessState());
     });
@@ -147,29 +146,16 @@ class ShopCubit extends Cubit<ShopStates> {
 
   getFavorites() {
     emit(ShopFavoritesLoadingState());
-    //this list is only temporary to compare with products and add isFavorite to products
-    List<FavoriteProductDataModel> favoriteProducts = [];
-
     DioHelper.getData(path: FAVORITES, headers: {
-      'Authorization': TOKEN,
+      'Authorization': Shared.TOKEN,
     }).then((json) {
       print('getFavorites${json}');
+      Shared.favoriteProductsIds = [];
 
       FavoriteProductsModel favoriteProductsModel =
           FavoriteProductsModel.fromJson(json.data);
       favoriteProductsModel.favoriteProductDataModel.forEach((element) {
-        favoriteProducts.add(element);
-      });
-
-      products.forEach((product) {
-        for (var i = 0; i < favoriteProducts.length; i++) {
-          if (product.id == favoriteProducts[i].productId) {
-            product.isFavorite = true;
-            if (!userFavoriteProducts.contains(product)) {
-              userFavoriteProducts.add(product);
-            }
-          }
-        }
+        Shared.favoriteProductsIds.add(element.productId);
       });
 
       //print('getFavoriteProducts${favoriteProducts[0].name}');
@@ -178,18 +164,31 @@ class ShopCubit extends Cubit<ShopStates> {
   }
 
   void addRemoveFavorite(ProductDataModel product, BuildContext context) {
+    print('addRemoveFavorite called ');
+
     //update locally to show on ui
     updateFavoriteLists(product);
     //update on the api
     DioHelper.postData(path: FAVORITES, headers: {
-      'Authorization': TOKEN,
+      'Authorization': Shared.TOKEN,
     }, data: {
       'product_id': product.id,
     }).then((json) {
       //update of favorite on api success
+
+      FavoriteResponse response = FavoriteResponse.fromJson(json.data);
+      if (!response.status) {
+        //update of favorite on api failed,reverse the changes made to ui and show
+        //error message
+        updateFavoriteLists(product);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("${product.name} favorite state update failed"),
+        ));
+      }
     }).catchError((error) {
       //update of favorite on api failed,reverse the changes made to ui and show
       //error message
+      print('error ${error.toString()}');
       updateFavoriteLists(product);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("${product.name} favorite state update failed"),
@@ -198,16 +197,11 @@ class ShopCubit extends Cubit<ShopStates> {
   }
 
   void updateFavoriteLists(ProductDataModel product) {
-    if (userFavoriteProducts.contains(product)) {
-      userFavoriteProducts.remove(product);
+    if (Shared.favoriteProductsIds.contains(product.id)) {
+      Shared.favoriteProductsIds.remove(product.id);
     } else {
-      userFavoriteProducts.add(product);
+      Shared.favoriteProductsIds.add(product.id);
     }
-    products.forEach((element) {
-      if (element == product) {
-        element.isFavorite = !element.isFavorite;
-      }
-    });
 
     emit(LocalChangeFavoriteState());
   }

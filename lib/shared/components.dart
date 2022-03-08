@@ -211,7 +211,8 @@ Widget Product(ProductDataModel product, double screenWidth,
                             color: Colors.grey,
                           )),
                     );
-                  } else if (product.isFavorite) {
+                  } else if (Shared.favoriteProductsIds.contains(product.id)) {
+                    print('fav item${product.id}');
                     return IconButton(
                         onPressed: () {
                           shopCubit.addRemoveFavorite(product, context);
@@ -240,34 +241,115 @@ Widget Product(ProductDataModel product, double screenWidth,
   );
 }
 
-/*
-Widget CategoryProduct(CategoryProductDataModel product, double screenWidth) {
+Widget FavoriteProduct(
+    ProductDataModel product, ShopCubit shopCubit, BuildContext context) {
   return Container(
     color: Colors.white,
-    child: Column(
+    child: Row(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Image(
-            fit: BoxFit.fill,
-            width: screenWidth / 2,
-            height: 150,
-            image: NetworkImage(product.image),
+        Stack(children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Image(
+              fit: BoxFit.fill,
+              width: 120,
+              height: 130,
+              image: NetworkImage(product.image),
+            ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Text(
-            product.name,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+          product.price < product.oldPrice
+              ? Container(
+                  color: Colors.red,
+                  child: const Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(
+                      'DISCOUNT',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                )
+              : SizedBox(),
+        ]),
+        Expanded(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text(
+                  product.name,
+                  textAlign: TextAlign.center,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: SizedBox(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        product.price.toString(),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      product.price < product.oldPrice
+                          ? Text(
+                              product.oldPrice.toString(),
+                              style: const TextStyle(
+                                  decoration: TextDecoration.lineThrough,
+                                  color: Colors.grey),
+                            )
+                          : const SizedBox(),
+                      const Spacer(),
+                      (() {
+                        if (shopCubit.state is ShopFavoritesLoadingState) {
+                          return const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  color: Colors.grey,
+                                )),
+                          );
+                        } else if (Shared.favoriteProductsIds
+                            .contains(product.id)) {
+                          print('fav item${product.id}');
+                          return IconButton(
+                              onPressed: () {
+                                shopCubit.addRemoveFavorite(product, context);
+                              },
+                              icon: const Icon(
+                                Icons.favorite,
+                                color: Colors.red,
+                              ));
+                        } else {
+                          return IconButton(
+                              onPressed: () {
+                                shopCubit.addRemoveFavorite(product, context);
+                              },
+                              icon: const Icon(
+                                Icons.favorite_border,
+                                color: Colors.grey,
+                              ));
+                        }
+                      }())
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-        ),
+        )
       ],
     ),
   );
-}*/
+}
 
 void navigateToAndFinish(
     {required BuildContext context, required Widget screen}) {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'package:shop_app_flutter/bloc/shop_cubit.dart';
+import 'package:shop_app_flutter/shared/components.dart';
 
 class CategoryProductsScreen extends StatelessWidget {
   CategoryProductsScreen(
@@ -23,6 +24,7 @@ class CategoryProductsScreen extends StatelessWidget {
         builder: (context, state) {
           ShopCubit shopCubit = ShopCubit.get(context)
             ..getCategoryProducts(categoryId);
+
           var screenWidth = MediaQuery.of(context).size.width;
           return Scaffold(
             appBar: AppBar(title: (Text(categoryName))),
@@ -33,12 +35,12 @@ class CategoryProductsScreen extends StatelessWidget {
                       physics: const BouncingScrollPhysics(),
                       crossAxisSpacing: 1,
                       mainAxisSpacing: 1,
-                      childAspectRatio: .85,
+                      childAspectRatio: .70,
                       crossAxisCount: 2,
                       children: List.generate(shopCubit.categoryProducts.length,
                           (index) {
-                        //todo handle category product as product (unify models)
-                        return Text('todo');
+                        return Product(shopCubit.categoryProducts[index],
+                            screenWidth, shopCubit, context);
                       }),
                     ),
                   )

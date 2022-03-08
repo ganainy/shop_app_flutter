@@ -70,43 +70,8 @@ class ProductDataModel {
   late String image;
   late String name;
   late String description;
-  var isFavorite = false;
 
   ProductDataModel.fromJson(json) {
-    id = json['id'];
-    price = json['price'];
-    oldPrice = json['old_price'];
-    discount = json['discount'];
-    image = json['image'];
-    name = json['name'];
-    description = json['description'];
-  }
-}
-
-//Category Products
-class CategoryProductsModel {
-  late bool status;
-  List<CategoryProductDataModel> categoryProductDataModels = [];
-
-  CategoryProductsModel.fromJson(json) {
-    status = json['status'];
-    var data = json['data']['data'];
-    data.forEach((element) {
-      categoryProductDataModels.add(CategoryProductDataModel.fromJson(element));
-    });
-  }
-}
-
-class CategoryProductDataModel {
-  late int id;
-  late var price;
-  late var oldPrice;
-  late var discount;
-  late String image;
-  late String name;
-  String? description;
-
-  CategoryProductDataModel.fromJson(json) {
     id = json['id'];
     price = json['price'];
     oldPrice = json['old_price'];
@@ -152,5 +117,15 @@ class FavoriteProductDataModel {
     image = json['product']['image'];
     name = json['product']['name'];
     description = json['product']['description'];
+  }
+}
+
+class FavoriteResponse {
+  late bool status;
+  late String message;
+
+  FavoriteResponse.fromJson(json) {
+    status = json['status'];
+    message = json['message'];
   }
 }

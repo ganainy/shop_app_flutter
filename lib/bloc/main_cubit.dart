@@ -47,7 +47,7 @@ class MainCubit extends Cubit<MainStates> {
 
   saveToken() {
     CacheHelper.getData(key: 'token').then((token) {
-      TOKEN = token.toString();
+      Shared.TOKEN = token.toString();
     });
   }
 }
