@@ -5,13 +5,14 @@ import 'package:shop_app_flutter/models/login_model.dart';
 import 'package:shop_app_flutter/network/cache_helper.dart';
 import 'package:shop_app_flutter/network/dio_helper.dart';
 import 'package:shop_app_flutter/network/endpoints.dart';
+import 'package:shop_app_flutter/shared/constants.dart';
 
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginStates> {
   LoginCubit() : super(LoginInitial());
 
-  bool isPasswordVisible = true;
+  bool isPasswordVisible = false;
 
   static LoginCubit get(context) => BlocProvider.of(context);
 
@@ -29,6 +30,7 @@ class LoginCubit extends Cubit<LoginStates> {
       //print('api resonse$loginModel');
       if (loginModel.status) {
         //print('token  ${loginModel.data?.token}');
+        Shared.TOKEN = loginModel.data!.token;
         CacheHelper.setData(key: 'token', value: loginModel.data?.token)
             .then((value) {
           emit(LoginSuccess());

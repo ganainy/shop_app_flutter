@@ -25,77 +25,84 @@ class SettingsScreen extends StatelessWidget {
         }
         return Form(
           key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                (shopCubit.state is ProfileUpdateLoading ||
-                        shopCubit.state is ProfileGetLoading)
-                    ? const LinearProgressIndicator()
-                    : const SizedBox(),
-                DefaultFormField(
-                    controller: nameController,
-                    labelText: '',
-                    prefixIcon: const Icon(Icons.account_circle),
-                    validator: (value) {
-                      if (value.toString().isEmpty) {
-                        return 'Please enter name';
-                      } else {
-                        return null;
-                      }
-                    }),
-                const SizedBox(
-                  height: 8,
+          child: Column(
+            children: [
+              (shopCubit.state is ProfileUpdateLoading ||
+                      shopCubit.state is ProfileGetLoading)
+                  ? const LinearProgressIndicator()
+                  : const SizedBox(),
+              const SizedBox(
+                height: 16,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    DefaultFormField(
+                        controller: nameController,
+                        labelText: '',
+                        prefixIcon: const Icon(Icons.account_circle),
+                        validator: (value) {
+                          if (value.toString().isEmpty) {
+                            return 'Please enter name';
+                          } else {
+                            return null;
+                          }
+                        }),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    DefaultFormField(
+                        controller: emailController,
+                        labelText: '',
+                        prefixIcon: const Icon(Icons.email),
+                        validator: (value) {
+                          if (value.toString().isEmpty) {
+                            return 'Please enter email';
+                          } else {
+                            return null;
+                          }
+                        }),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    DefaultFormField(
+                        controller: phoneController,
+                        labelText: '',
+                        prefixIcon: const Icon(Icons.phone),
+                        validator: (value) {
+                          if (value.toString().isEmpty) {
+                            return 'Please enter phone';
+                          } else {
+                            return null;
+                          }
+                        }),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    DefaultButton(
+                        text: 'Update profile',
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            shopCubit.updateProfile(
+                                email: emailController.value.text,
+                                name: nameController.value.text,
+                                phone: phoneController.value.text,
+                                context: context);
+                          }
+                        }),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    DefaultButton(
+                        text: 'Sign out',
+                        onPressed: () {
+                          shopCubit.logOut(context);
+                        }),
+                  ],
                 ),
-                DefaultFormField(
-                    controller: emailController,
-                    labelText: '',
-                    prefixIcon: const Icon(Icons.email),
-                    validator: (value) {
-                      if (value.toString().isEmpty) {
-                        return 'Please enter email';
-                      } else {
-                        return null;
-                      }
-                    }),
-                const SizedBox(
-                  height: 8,
-                ),
-                DefaultFormField(
-                    controller: phoneController,
-                    labelText: '',
-                    prefixIcon: const Icon(Icons.phone),
-                    validator: (value) {
-                      if (value.toString().isEmpty) {
-                        return 'Please enter phone';
-                      } else {
-                        return null;
-                      }
-                    }),
-                const SizedBox(
-                  height: 8,
-                ),
-                DefaultButton(
-                    text: 'Update profile',
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        shopCubit.updateProfile(
-                            email: emailController.value.text,
-                            name: nameController.value.text,
-                            phone: phoneController.value.text,
-                            context: context);
-                      }
-                    }),
-                const SizedBox(
-                  height: 8,
-                ),
-                DefaultButton(
-                    text: 'Sign out',
-                    onPressed: () {
-                      shopCubit.logOut(context);
-                    }),
-              ],
-            ),
+              )
+            ],
           ),
         );
       },
