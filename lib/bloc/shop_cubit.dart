@@ -27,6 +27,7 @@ class ShopCubit extends Cubit<ShopStates> {
   List<ProductDataModel> products = [];
   List<CategoriesDataModel> categories = [];
   List<ProductDataModel> categoryProducts = [];
+  ProfileModel? profileModel;
 
   List<BottomNavigationBarItem> botNavItems = [
     const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
@@ -41,7 +42,7 @@ class ShopCubit extends Cubit<ShopStates> {
     const HomeScreen(),
     const CategoriesScreen(),
     const FavoritesScreen(),
-    const SettingsScreen(),
+    SettingsScreen(),
   ];
 
   changeBotNavIndex(int index) {
@@ -204,5 +205,56 @@ class ShopCubit extends Cubit<ShopStates> {
     }
 
     emit(LocalChangeFavoriteState());
+  }
+
+  getProfile() {
+    if (profileModel != null) return;
+
+    emit(ProfileGetLoading());
+    DioHelper.getData(path: PROFILE, headers: {
+      'Authorization': Shared.TOKEN,
+    }).then((json) {
+      profileModel = ProfileModel.fromJson(json.data);
+      print('getProfile${profileModel?.profileDataModel.name}');
+
+      emit(ProfileGetSuccess());
+    }).onError((error, stackTrace) {
+      print(error.toString());
+    });
+  }
+
+  updateProfile(
+      {required String name,
+      required String email,
+      required String phone,
+      required BuildContext context}) {
+    emit(ProfileUpdateLoading());
+    DioHelper.putData(path: UPDATE_PROFILE, headers: {
+      'Authorization': Shared.TOKEN,
+    }, data: {
+      "name": name,
+      "phone": phone,
+      "email": email
+    }).then((json) {
+      profileModel = ProfileModel.fromJson(json.data);
+      print('updateProfile${profileModel?.profileDataModel.name}');
+      if (profileModel!.status) {
+        emit(ProfileUpdateSuccess());
+      } else {
+        emit(ProfileUpdateError());
+        var snackBar = SnackBar(
+            content:
+                Text(profileModel!.message ?? 'Error while updating profile'));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+        print('profileModel!.message ${profileModel!.message}');
+      }
+    }).onError((error, stackTrace) {
+      print(error.toString());
+      emit(ProfileUpdateError());
+      var snackBar =
+          const SnackBar(content: Text('Error while updating profile'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    });
   }
 }

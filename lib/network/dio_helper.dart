@@ -31,4 +31,17 @@ class DioHelper {
 
     return await dio.post(path, queryParameters: queryParams, data: data);
   }
+
+  static Future<Response> putData({
+    required String path,
+    Map<String, dynamic>? queryParams,
+    required Map<String, dynamic> data,
+    Map<String, dynamic>? headers,
+  }) async {
+    //add headers to the dio in addition to the headers i alrady created in
+    // case i want to pass some optional parameters like language
+    dio.options.headers = headers;
+
+    return await dio.put(path, queryParameters: queryParams, data: data);
+  }
 }

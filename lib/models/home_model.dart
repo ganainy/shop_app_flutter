@@ -120,6 +120,7 @@ class FavoriteProductDataModel {
   }
 }
 
+//add remove favorite response
 class FavoriteResponse {
   late bool status;
   late String message;
@@ -127,5 +128,34 @@ class FavoriteResponse {
   FavoriteResponse.fromJson(json) {
     status = json['status'];
     message = json['message'];
+  }
+}
+
+//profile
+class ProfileModel {
+  late bool status;
+  String? message;
+
+  late ProfileDataModel profileDataModel;
+
+  ProfileModel.fromJson(json) {
+    status = json['status'];
+    message = json['message'];
+    profileDataModel = ProfileDataModel.fromJson(json['data']);
+  }
+}
+
+class ProfileDataModel {
+  late int id;
+  late String name;
+  late String email;
+  late String phone;
+
+  ProfileDataModel.fromJson(json) {
+    //print(json['product']);
+    id = json['id'];
+    name = json['name'];
+    email = json['email'];
+    phone = json['phone'];
   }
 }

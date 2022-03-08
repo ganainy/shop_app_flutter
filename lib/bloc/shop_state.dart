@@ -24,3 +24,15 @@ class UpdateFavoritesSuccessState extends ShopStates {}
 class ShopBannersLoadingState extends ShopStates {}
 
 class ShopProductsState extends ShopStates {}
+
+class ProfileGetSuccess extends ShopStates {}
+
+class ProfileGetLoading extends ShopStates {}
+
+class ProfileGetError extends ShopStates {}
+
+class ProfileUpdateSuccess extends ShopStates {}
+
+class ProfileUpdateLoading extends ShopStates {}
+
+class ProfileUpdateError extends ShopStates {}
