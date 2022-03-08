@@ -3,8 +3,10 @@ import 'dart:core';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:shop_app_flutter/bloc/search_cubit.dart';
 import 'package:shop_app_flutter/bloc/shop_cubit.dart';
 import 'package:shop_app_flutter/models/home_model.dart';
+import 'package:shop_app_flutter/models/search_model.dart';
 import 'package:shop_app_flutter/screens/category_products.dart';
 import 'package:shop_app_flutter/shared/constants.dart';
 
@@ -40,8 +42,10 @@ DefaultFormField({
   bool? isReadOnly,
   FormFieldValidator? validator,
   ValueChanged<String>? onFieldChanged,
+  ValueChanged<String>? onFieldSubmitted,
 }) {
   return TextFormField(
+    onFieldSubmitted: onFieldSubmitted,
     onChanged: onFieldChanged,
     onTap: onFieldTap,
     keyboardType: keyboardType,
@@ -225,6 +229,76 @@ Widget Product(ProductDataModel product, double screenWidth,
                     return IconButton(
                         onPressed: () {
                           shopCubit.addRemoveFavorite(product, context);
+                        },
+                        icon: const Icon(
+                          Icons.favorite_border,
+                          color: Colors.grey,
+                        ));
+                  }
+                }())
+              ],
+            ),
+          ),
+        )
+      ],
+    ),
+  );
+}
+
+Widget SearchProduct(SearchProductDataModel product, double screenWidth,
+    SearchCubit searchCubit, BuildContext context) {
+  return Container(
+    color: Colors.white,
+    child: Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Image(
+            fit: BoxFit.fill,
+            width: screenWidth / 2,
+            height: 150,
+            image: NetworkImage(product.images.elementAt(0)),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Text(
+            product.name,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: SizedBox(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  product.price.toString(),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                const Spacer(),
+                (() {
+                  if (Shared.favoriteProductsIds.contains(product.id)) {
+                    print('fav item${product.id}');
+                    return IconButton(
+                        onPressed: () {
+                          searchCubit.addRemoveFavorite(product, context);
+                        },
+                        icon: const Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                        ));
+                  } else {
+                    return IconButton(
+                        onPressed: () {
+                          searchCubit.addRemoveFavorite(product, context);
                         },
                         icon: const Icon(
                           Icons.favorite_border,

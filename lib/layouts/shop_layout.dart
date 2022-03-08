@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app_flutter/bloc/shop_cubit.dart';
+import 'package:shop_app_flutter/screens/search.dart';
+import 'package:shop_app_flutter/shared/components.dart';
 
 class ShopLayout extends StatelessWidget {
   const ShopLayout({Key? key}) : super(key: key);
@@ -22,7 +24,7 @@ class ShopLayout extends StatelessWidget {
               actions: [
                 IconButton(
                     onPressed: () {
-                      //navigateTo(context: context, screen: SearchScreen());
+                      navigateTo(context: context, screen: SearchScreen());
                     },
                     icon: const Icon(Icons.search)),
               ],

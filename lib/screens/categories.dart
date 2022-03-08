@@ -20,7 +20,8 @@ class CategoriesScreen extends StatelessWidget {
                       padding: EdgeInsets.all(8.0),
                       child: Category(shopCubit.categories[index], context),
                     ),
-                separatorBuilder: (context, index) => const SizedBox(
+                separatorBuilder: (context, index) => Container(
+                      color: Colors.grey[300],
                       height: 1,
                     ),
                 itemCount: shopCubit.categories.length)

@@ -13,7 +13,8 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var shopCubit = ShopCubit.get(context)
       ..getBanners()
-      ..getProducts();
+      ..getProducts()
+      ..getFavorites();
     var screenWidth = MediaQuery.of(context).size.width;
     return BlocConsumer<ShopCubit, ShopStates>(
       listener: (context, state) {},

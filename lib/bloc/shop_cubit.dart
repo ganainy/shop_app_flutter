@@ -48,31 +48,30 @@ class ShopCubit extends Cubit<ShopStates> {
   changeBotNavIndex(int index) {
     botNavCurrentIndex = index;
     emit(ShopBotNavState());
-    //load from api based on the selected bottom nav
-    switch (index) {
+    /* switch (index) {
       case 0:
         {
-          //todo
+
           break;
         }
 
       case 1:
         {
-          //todo
+
           break;
         }
 
       case 2:
         {
-          //todo
+
           break;
         }
       case 3:
         {
-          //todo
+
           break;
         }
-    }
+    }*/
   }
 
   void logOut(BuildContext context) {
@@ -156,7 +155,9 @@ class ShopCubit extends Cubit<ShopStates> {
       FavoriteProductsModel favoriteProductsModel =
           FavoriteProductsModel.fromJson(json.data);
       favoriteProductsModel.favoriteProductDataModel.forEach((element) {
-        Shared.favoriteProductsIds.add(element.productId);
+        if (!Shared.favoriteProductsIds.contains(element.productId)) {
+          Shared.favoriteProductsIds.add(element.productId);
+        }
       });
 
       //print('getFavoriteProducts${favoriteProducts[0].name}');
