@@ -11,7 +11,7 @@ import 'package:shop_app_flutter/screens/categories.dart';
 import 'package:shop_app_flutter/screens/favorites.dart';
 import 'package:shop_app_flutter/screens/home.dart';
 import 'package:shop_app_flutter/screens/login.dart';
-import 'package:shop_app_flutter/screens/settings.dart';
+import 'package:shop_app_flutter/screens/profile.dart';
 import 'package:shop_app_flutter/shared/components.dart';
 import 'package:shop_app_flutter/shared/constants.dart';
 
@@ -35,14 +35,14 @@ class ShopCubit extends Cubit<ShopStates> {
     const BottomNavigationBarItem(
         icon: Icon(Icons.favorite), label: 'Favorites'),
     const BottomNavigationBarItem(
-        icon: Icon(Icons.settings), label: 'Settings'),
+        icon: Icon(Icons.account_circle), label: 'Profile'),
   ];
 
   List<Widget> botNavScreens = [
     const HomeScreen(),
     const CategoriesScreen(),
     const FavoritesScreen(),
-    SettingsScreen(),
+    ProfileScreen(),
   ];
 
   changeBotNavIndex(int index) {
@@ -261,5 +261,38 @@ class ShopCubit extends Cubit<ShopStates> {
           const SnackBar(content: Text('Error while updating profile'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     });
+  }
+
+  showLogoutConfirmationAlertDialog(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: const Text("Cancel"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget continueButton = TextButton(
+      child: const Text("Confirm"),
+      onPressed: () {
+        Navigator.of(context).pop();
+        logOut(context);
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: const Text("Logout"),
+      content: const Text("Are you sure you want to Logout?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

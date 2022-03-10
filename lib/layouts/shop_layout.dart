@@ -22,15 +22,21 @@ class ShopLayout extends StatelessWidget {
                 style: TextStyle(fontFamily: 'Merienda'),
               ),
               actions: [
-                IconButton(
-                    onPressed: () {
-                      navigateTo(context: context, screen: SearchScreen())
-                          .then((value) {
-                        shopCubit.updateFavorites();
-                        print('navigation back $value');
-                      });
-                    },
-                    icon: const Icon(Icons.search)),
+                shopCubit.botNavCurrentIndex == 3
+                    ? IconButton(
+                        onPressed: () {
+                          shopCubit.showLogoutConfirmationAlertDialog(context);
+                        },
+                        icon: const Icon(Icons.logout))
+                    : IconButton(
+                        onPressed: () {
+                          navigateTo(context: context, screen: SearchScreen())
+                              .then((value) {
+                            shopCubit.updateFavorites();
+                            print('navigation back $value');
+                          });
+                        },
+                        icon: const Icon(Icons.search)),
               ],
             ),
             bottomNavigationBar: BottomNavigationBar(
