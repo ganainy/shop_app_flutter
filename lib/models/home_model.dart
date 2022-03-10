@@ -70,6 +70,7 @@ class ProductDataModel {
   late String image;
   late String name;
   late String description;
+  List<dynamic>? images;
 
   ProductDataModel.fromJson(json) {
     id = json['id'];
@@ -79,6 +80,7 @@ class ProductDataModel {
     image = json['image'];
     name = json['name'];
     description = json['description'];
+    images = json['images'];
   }
 }
 

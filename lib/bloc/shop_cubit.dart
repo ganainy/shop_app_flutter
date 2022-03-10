@@ -165,6 +165,10 @@ class ShopCubit extends Cubit<ShopStates> {
     });
   }
 
+  void updateFavorites() {
+    emit(ShopFavoritesSuccessState());
+  }
+
   void addRemoveFavorite(ProductDataModel product, BuildContext context) {
     print('addRemoveFavorite called ');
 

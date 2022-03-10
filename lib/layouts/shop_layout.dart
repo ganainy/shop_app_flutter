@@ -24,7 +24,11 @@ class ShopLayout extends StatelessWidget {
               actions: [
                 IconButton(
                     onPressed: () {
-                      navigateTo(context: context, screen: SearchScreen());
+                      navigateTo(context: context, screen: SearchScreen())
+                          .then((value) {
+                        shopCubit.updateFavorites();
+                        print('navigation back $value');
+                      });
                     },
                     icon: const Icon(Icons.search)),
               ],

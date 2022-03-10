@@ -1,51 +1,24 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:shop_app_flutter/models/home_model.dart';
-import 'package:shop_app_flutter/models/search_model.dart';
 import 'package:shop_app_flutter/network/dio_helper.dart';
 import 'package:shop_app_flutter/network/endpoints.dart';
 import 'package:shop_app_flutter/shared/constants.dart';
 
-part 'search_state.dart';
+part 'product_state.dart';
 
-class SearchCubit extends Cubit<SearchStates> {
-  SearchCubit() : super(SearchInitial());
-
-  List<SearchProductDataModel> products = [];
+class ProductCubit extends Cubit<ProductStates> {
+  ProductCubit() : super(ProductInitial());
 
   bool isFavoritesChanged = false;
+  bool isDescriptionExpanded = false;
 
-  static SearchCubit get(context) => BlocProvider.of(context);
+  static ProductCubit get(context) => BlocProvider.of(context);
 
-  // Shared.favoriteProductsIds
-
-  void search(String query) {
-    emit(SearchLoading());
-    products = [];
-    DioHelper.postData(path: SEARCH, headers: {
-      'Authorization': Shared.TOKEN
-    }, data: {
-      'text': query,
-    }).then((json) {
-      if (json.data['status']) {
-        SearchProductsModel searchProductsModel =
-            SearchProductsModel.fromJson(json.data);
-        products = [];
-        searchProductsModel.searchProductDataModels.forEach((element) {
-          products.add(element);
-        });
-        emit(SearchSuccess());
-      } else {
-        emit(SearchError(json.data['message']));
-      }
-    }).catchError((error) {
-      emit(SearchError(error.toString()));
-    });
-  }
-
-  void addRemoveFavorite(SearchProductDataModel product, BuildContext context) {
+  void addRemoveFavorite(ProductDataModel product, BuildContext context) {
     print('addRemoveFavorite called ');
 
     //update locally to show on ui
@@ -77,7 +50,7 @@ class SearchCubit extends Cubit<SearchStates> {
     });
   }
 
-  void updateFavoriteLists(SearchProductDataModel product) {
+  void updateFavoriteLists(ProductDataModel product) {
     //flag to update favorites if changed when navigating back to home
     isFavoritesChanged = true;
     if (Shared.favoriteProductsIds.contains(product.id)) {
@@ -86,11 +59,11 @@ class SearchCubit extends Cubit<SearchStates> {
       Shared.favoriteProductsIds.add(product.id);
     }
 
-    emit(LocalChangeFavoriteState());
+    emit(FavoriteUpdateState());
   }
 
-  void resetSearch() {
-    products = [];
-    emit(SearchInitial());
+  expandShrinkDescription() {
+    isDescriptionExpanded = !isDescriptionExpanded;
+    emit(ExpandShrinkDescriptionState());
   }
 }

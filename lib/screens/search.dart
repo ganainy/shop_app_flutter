@@ -25,91 +25,101 @@ class SearchScreen extends StatelessWidget {
                           }
                           searchCubit.search(searchController.value.text);*/
           var screenWidth = MediaQuery.of(context).size.width;
-          return Scaffold(
-            body: SafeArea(
-                child: Container(
-              height: 1000,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(8),
-                    child: DefaultFormField(
-                        labelText: 'Search',
-                        controller: searchController,
-                        prefixIcon: const Icon(Icons.search),
-                        onFieldSubmitted: (query) {
-                          if (searchController.value.text.isEmpty) {
-                            searchCubit.resetSearch();
-                            return;
-                          }
-                          searchCubit.search(searchController.value.text);
-                        }),
-                  ),
-                  const SizedBox(height: 8),
-                  (() {
-                    if (searchCubit.state is SearchError) {
-                      return Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                                child: Center(
-                              child: Text((searchCubit.state as SearchError)
-                                  .errorMessage),
-                            )),
-                          ],
-                        ),
-                      );
-                    } else if (searchCubit.state is SearchLoading) {
-                      return Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const SizedBox(
-                              child: Center(
-                                child: const CircularProgressIndicator(),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    } else if (searchCubit.products.isNotEmpty) {
-                      return Expanded(
-                        child: Container(
-                          color: Colors.grey[200],
-                          child: GridView.count(
-                            physics: const BouncingScrollPhysics(),
-                            crossAxisSpacing: 1,
-                            mainAxisSpacing: 1,
-                            childAspectRatio: .70,
-                            crossAxisCount: 2,
-                            children: List.generate(searchCubit.products.length,
-                                (index) {
-                              return SearchProduct(searchCubit.products[index],
-                                  screenWidth, searchCubit, context);
-                            }),
+          return WillPopScope(
+            onWillPop: () async {
+              //pass flag on pop to decide if favorites should be reloaded or not
+              Navigator.pop(context, searchCubit.isFavoritesChanged);
+              return false;
+            },
+            child: Scaffold(
+              body: SafeArea(
+                  child: Container(
+                height: 1000,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(8),
+                      child: DefaultFormField(
+                          labelText: 'Search',
+                          controller: searchController,
+                          prefixIcon: const Icon(Icons.search),
+                          onFieldSubmitted: (query) {
+                            if (searchController.value.text.isEmpty) {
+                              searchCubit.resetSearch();
+                              return;
+                            }
+                            searchCubit.search(searchController.value.text);
+                          }),
+                    ),
+                    const SizedBox(height: 8),
+                    (() {
+                      if (searchCubit.state is SearchError) {
+                        return Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                  child: Center(
+                                child: Text((searchCubit.state as SearchError)
+                                    .errorMessage),
+                              )),
+                            ],
                           ),
-                        ),
-                      );
-                    } else {
-                      return Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const SizedBox(
-                              child: Center(
-                                child: Text(
-                                    'Type something to start searching...'),
+                        );
+                      } else if (searchCubit.state is SearchLoading) {
+                        return Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const SizedBox(
+                                child: Center(
+                                  child: const CircularProgressIndicator(),
+                                ),
                               ),
+                            ],
+                          ),
+                        );
+                      } else if (searchCubit.products.isNotEmpty) {
+                        return Expanded(
+                          child: Container(
+                            color: Colors.grey[200],
+                            child: GridView.count(
+                              physics: const BouncingScrollPhysics(),
+                              crossAxisSpacing: 1,
+                              mainAxisSpacing: 1,
+                              childAspectRatio: .70,
+                              crossAxisCount: 2,
+                              children: List.generate(
+                                  searchCubit.products.length, (index) {
+                                return SearchProduct(
+                                    searchCubit.products[index],
+                                    screenWidth,
+                                    searchCubit,
+                                    context);
+                              }),
                             ),
-                          ],
-                        ),
-                      );
-                    }
-                  }()),
-                ],
-              ),
-            )),
+                          ),
+                        );
+                      } else {
+                        return Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const SizedBox(
+                                child: Center(
+                                  child: Text(
+                                      'Type something to start searching...'),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    }()),
+                  ],
+                ),
+              )),
+            ),
           );
         },
       ),
